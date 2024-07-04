@@ -1,0 +1,23 @@
+{
+    "id": 5083,
+    "version": 0,
+    "retailerId": "11e00728",
+    "createdDate": 1712986536000,
+    "createdByUser": "DEV_Castle",
+    "modifiedDate": null,
+    "modifiedByUser": null,
+    "modifiedDateAfter": null,
+    "retailerIds": null,
+    "tokenRetailerId": null,
+    "description": "Fitting Room Created By Prabhat",
+    "bookOnline": true,
+    "bookingMethodId": 1,
+    "status": "A",
+    "sequence": null,
+    "appointmentBlocks": [],
+    "fittingRoomAppointmentTypes": [],
+    "fittingRoomEvents": [],
+    "appointmentBlockEvents": [],
+    "bookingMethod": null,
+    "specialEvent": null
+}

@@ -1,0 +1,134 @@
+import 'package:castle_couture/core/app_export.dart';
+import 'package:flutter/material.dart';
+import 'package:webview_flutter/webview_flutter.dart';
+
+class PaymentFormWebView extends StatelessWidget {
+  const PaymentFormWebView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Payment Form'),
+      ),
+      body: WebView(
+        initialUrl: 'about:blank',
+        onWebViewCreated: (WebViewController webViewController) {
+          webViewController.loadUrl(
+            Uri.dataFromString(
+              '''
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Form Example</title>
+<!-- Include jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Include BridalLive Pay JS -->
+<script src="https://bridallive-pay-js.s3.amazonaws.com/v2.js"></script>
+<script src="https://bridallive-pay-js.s3.amazonaws.com/v2-qa.js"></script>
+<!-- Include reCAPTCHA script -->
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+<script>
+  function onSubmit(token) {
+    document.getElementById("card-form").submit();
+  }
+</script>
+<!-- Include library CSS -->
+<style>
+  /* Define your styles here */
+</style>
+</head>
+<body>
+<div id="form-container">
+  <form id="card-form">
+    <label for="card-number">Card Number:</label>
+    <input type="text" id="card-number" placeholder="XXXX XXXX XXXX XXXX" required><br>
+    
+    <label for="exp-month">Expiration Month:</label>
+    <input type="text" id="exp-month" placeholder="MM" required><br>
+    
+    <label for="exp-year">Expiration Year:</label>
+    <input type="text" id="exp-year" placeholder="YY" required><br>
+    
+    <label for="cvv">CVV:</label>
+    <input type="text" id="cvv" placeholder="CVV" required><br>
+    
+    <label for="zip">ZIP Code:</label>
+    <input type="text" id="zip" placeholder="ZIP" required><br>
+    
+    <label for="card-holder-name">Name on Card:</label>
+    <input type="text" id="card-holder-name" placeholder="Name on card" required><br>
+
+    <label for="country">Country:</label>
+    <select id="country">
+      <option value="US">United States</option>
+      <!-- Add more options as needed -->
+    </select><br>
+
+    <!-- Add reCAPTCHA -->
+    <!-- <div class="g-recaptcha" data-sitekey="6LcxhsApAAAAAH0wPyYIcd0KXuzrNJOr4KcUxHa6"></div> -->
+    <button class="g-recaptcha" 
+        data-sitekey="6LcxhsApAAAAAH0wPyYIcd0KXuzrNJOr4KcUxHa6" 
+        data-callback='onSubmit' 
+        data-action='submit'>Submit</button>
+    <!-- <button type="submit">Submit</button> -->
+  </form>
+    
+</div>
+
+<script>
+  \$(document).ready(function() {
+    \$("#card-form").submit(function(e) {
+      e.preventDefault();
+
+      var formData = {
+        cardNumber: \$('#card-number').val(),
+        expirationMonth: \$('#exp-month').val(),
+        expirationYear: \$('#exp-year').val(),
+        cvv: \$('#cvv').val(),
+        zip: \$('#zip').val(),
+        cardholderName: \$('#card-holder-name').val(),
+        country: \$('#country').val()
+      };
+
+      var blPay = new BLPay("11e00728");
+      var form = blPay.createForm({
+        formId: "form",
+        operationType: '8e2bac92-8902-4f1b-8848-ece1a9dcf373', // Specify the operation type here, e.g., "token" or "payment"
+        recaptcha: {
+          siteKey: '6LcxhsApAAAAAH0wPyYIcd0KXuzrNJOr4KcUxHa6' // Add your reCAPTCHA site key here
+        },
+        controls: formData
+      });
+
+      form
+        .on("ready", () => {
+          console.log("lodings");
+          document.body.classList.remove("__loading");
+        })
+        .on("validation", (errors) => {
+          console.log("validation");
+          if (Object.keys(errors).length === 0) {
+            console.log("Card information is valid");
+          } else {
+            console.log("Card information is not valid");
+          }
+        });
+    });
+  });
+</script>
+  
+</body>
+</html>
+              ''',
+              mimeType: 'text/html',
+            ).toString(),
+          );
+        },
+        javascriptMode: JavascriptMode.unrestricted,
+      ),
+    );
+  }
+}
